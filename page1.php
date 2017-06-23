@@ -58,6 +58,13 @@
 <body>
 <div class = "header">
 	<h1>Register for the test</h1>
+	<table style="width:20%">
+		<tr><th>exam period</th><th>written</th><th>performance</th></tr>
+		<tr><td align = center>A</td><td align = center>Jan 14</td><td align = center>Mar 31</td></tr>
+		<tr><td align = center>B</td><td align = center>Mar 25</td><td align = center>May 20</td></tr>
+		<tr><td align = center>C</td><td align = center>Jun 10</td><td align = center>Sep 09</td></tr>
+	</table>
+	<br>
 </div>
 
 
@@ -114,5 +121,9 @@
 
 	</table>
 </form>
+
+<br><br>
+<div><a href="home.php">Home</a></div>
+<div><a href="logout.php">Logout</a></div>
 </body>
 </html>

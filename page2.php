@@ -41,7 +41,7 @@
 		</tr>
 	</table>
 </form>
-
+<br><br>
 <div><a href="home.php">Home</a></div>
 <div><a href="logout.php">Logout</a></div>
 </body>
