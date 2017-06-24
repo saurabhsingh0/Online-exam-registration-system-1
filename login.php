@@ -14,8 +14,17 @@
 
 		if (mysqli_num_rows($result) == 1){
 			$_SESSION['message'] = "You are now logged in";
+			$result = mysqli_fetch_assoc($result);
+			$username = $result["username"];
+			$admin = $result["admin"];
+
+			$_SESSION['admin'] = $admin;
 			$_SESSION['username'] = $username;
-			header("location: home.php");
+			if ($admin == 'NO'){
+				header("location: home.php");
+			} else {
+				header("location: admin.php");
+			}
 		}else{
 			$_SESSION['message'] = "Username/password combination incorrect";
 		}

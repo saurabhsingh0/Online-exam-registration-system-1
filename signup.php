@@ -15,15 +15,23 @@
 		$dob = mysqli_real_escape_string($db, $_POST['dob']);
 		$phone = mysqli_real_escape_string($db, $_POST['phone']);
 		$email = mysqli_real_escape_string($db, $_POST['email']);
+		$admin = mysqli_real_escape_string($db, $_POST['admin']);
 
 	if ($password != '' && $password2 != '' && $password == $password2) {
 		//create user
 		$password = md5($password); //hash password before storing for security purposes
-		$sql = "INSERT INTO member(username, member_name, dob, phone, email, password) VALUES('".$username."','".$member_name."','".$dob."','".$phone."','".$email."','".$password."');";
-		mysqli_query($db, $sql);
+		$sql = "INSERT INTO member(username, member_name, dob, phone, email, password, admin) VALUES('".$username."','".$member_name."','".$dob."','".$phone."','".$email."','".$password."','".$admin."');";
+		$result = mysqli_query($db, $sql);
+
 		$_SESSION['message']="You are now logged in";
+		$_SESSION['admin'] = $admin;
 		$_SESSION['username']=$username;
-		header("location: home.php"); //redirect to home page
+		
+		if ($admin == 'NO'){
+			header("location: home.php");
+		} else {
+			header("location: admin.php");
+		}
 	}
 	else{
 		$_SESSION['message']="The two passwords do not match";
@@ -42,7 +50,7 @@
 	<h1>Sign up</h1>
 </div>
 
-<form method="post" action="register.php">
+<form method="post" action="signup.php">
 	<table>
 		<tr>
 			<td>Username:</td>
@@ -71,6 +79,11 @@
 		<tr>
 			<td>Email address:</td>
 			<td><input type="email" name="email" class="textInput"></td>
+		</tr>
+		<tr>
+			<td>Admin:</td>
+			<td><input type="radio" name="admin" value = NO> No<br>
+  				<input type="radio" name="admin" value = YES> Yes<br></td>
 		</tr>
 		<tr>
 			<td></td>
