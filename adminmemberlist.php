@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>Member List</title>
 </head>
 <body>
 <div class = "header">
@@ -11,22 +11,22 @@
 <?php
     session_start();
 
+    $admin = $_SESSION['admin'];
+
+    if(!isset($_SESSION['username'])){
+        header("location: home1.php");
+    } else if ($admin == 'NO'){
+        header("location: home.php");
+    }
+
     $db = mysqli_connect("localhost", "root", "vdxd", "examination");
     // Check connection 
     if (!$db) {
         die("Connection failed: " . mysqli_connect_error());
     }
 
-    /*if(isset($_SESSION['username'])){
-        $username = $_SESSION['username'];
-    }else {
-        echo 'noo';
-    }*/
-
-    //$username = $_SESSION['username'];
     $sql = "SELECT * FROM member;";
-    $result = mysqli_query($db, $sql);
-    //$result = mysqli_query($db, $sql) or die(mysqli_error($db));
+    $result = mysqli_query($db, $sql) or die(mysqli_error($db));
     if (mysqli_num_rows($result) > 0) {
     // output data of each row
         echo '<table cellpadding="10">';
@@ -42,7 +42,7 @@
 ?>
 
 <br><br>
-<div><a href="home.php">Home</a></div>
+<div><a href="admin.php">Admin Home</a></div>
 <div><a href="logout.php">Logout</a></div>
 </body>
 </html>

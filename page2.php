@@ -16,7 +16,7 @@
 	<table>
 		<tr>
 			<td>username:</td>
-			<td><?php echo $_SESSION['username'];?>
+			<td><?php echo $_SESSION['username']?>
   			</td>
 		</tr>
 		<tr>

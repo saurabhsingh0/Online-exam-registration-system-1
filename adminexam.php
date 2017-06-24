@@ -13,16 +13,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Admin page</title>
+	<title>Admin Exam</title>
 </head>
 <body>
 
-<h1>Admin page</h1>
+<h1>Admin Exam</h1>
 <div><h4>Welcome <?php echo $_SESSION['username']; ?></h4></div>
-<div><a href="adminmemberlist.php">Member list</a></div>
-<div><a href="adminexam.php">Exam</a></div>
-<div><a href="adminregistration.php">View all registration</a></div>
+
+<div><a href="examlist.php">Exam list</a></div>
+<div><a href="adminexamperiod.php">Admin Exam Period</a></div>
 <br>
+
+
+
+<div><a href="admin.php">Admin Home</a></div>
 <div><a href="logout.php">Logout</a></div>
 </body>
 </html>

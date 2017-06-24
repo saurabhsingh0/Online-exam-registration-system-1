@@ -3,6 +3,13 @@
 	//connect to database
 	$db = mysqli_connect("localhost", "root", "vdxd", "examination");
 	
+	mysqli_autocommit($db, false);
+	$flag = true;
+
+	if(!isset($_SESSION['username'])){
+    	header("location: home1.php");
+	}
+
 	if (isset($_POST['testregister_btn'])){
 		$username = mysqli_real_escape_string($db, $_SESSION['username']);
 		$subject = mysqli_real_escape_string($db, $_POST['subject']);
@@ -14,18 +21,35 @@
 		$examareaname = explode(' ',$examarea);
 		$examareaname = $examareaname[2].' '.$examareaname[3];
 		
-		$result = mysqli_query($db, "SELECT examareaid FROM examarea WHERE examareaname = '$examareaname'");
-		if (!$result) {
-    		echo 'Could not run query: ' . mysql_error();
-    		exit;
+
+		if($examtype == 'written'){
+			$sql = "SELECT wregstart,wregend FROM examperiodlist WHERE examperiod = '$examperiod'";
+			$result = mysqli_query($db, $sql) or die(mysqli_error($db));
+			
+			$examperiod1 = mysqli_fetch_row($result);
+			$startdate = DATE_FORMAT(date_Create($examperiod1[0]),'m-d');
+			$enddate = DATE_FORMAT(date_Create($examperiod1[1]),'m-d');
+			$cur = date('m-d');
+			if(($cur < $startdate) || ($cur > $enddate)){
+				$flag = false;
+			}
+		}else if($examtype == 'performance'){
+			$sql = "SELECT pregstart,pregend FROM examperiodlist WHERE examperiod = '$examperiod'";
+			$result = mysqli_query($db, $sql) or die(mysqli_error($db));
+			
+			$examperiod1 = mysqli_fetch_row($result);
+			$startdate = DATE_FORMAT(date_Create($examperiod1[0]),'m-d');
+			$enddate = DATE_FORMAT(date_Create($examperiod1[1]),'m-d');
+			$cur = date('m-d');
+			if(($cur < $startdate) || ($cur > $enddate)){
+				$flag = false;
+			}
 		}
+
+		$result = mysqli_query($db, "SELECT examareaid FROM examarea WHERE examareaname = '$examareaname'") or die(mysqli_error($db));
 		$examareaid = mysqli_fetch_row($result);
 
-		$result = mysqli_query($db, "SELECT subjectid FROM subject WHERE subjectname = '$subject'");
-		if (!$result) {
-    		echo 'Could not run query: ' . mysql_error();
-    		exit;
-		}
+		$result = mysqli_query($db, "SELECT subjectid FROM subject WHERE subjectname = '$subject'") or die(mysqli_error($db));
 		$subjectid = mysqli_fetch_row($result);
 
 		$sql = "INSERT INTO testregister(username,date,subjectid,examyear,examperiod,examtype,examareaid,textservice) VALUES('".$username."',curdate(),'".$subjectid[0]."', YEAR(curdate()),'".$examperiod."','".$examtype."','".$examareaid[0]."','".$textservice."');";
@@ -43,10 +67,17 @@
 			$_SESSION['examdate'] = $examdate[0].', '.date("Y");
 		}
 
-		$_SESSION['subject'] = $subject;
-		$_SESSION['examareaname'] = $examareaname;
-		$_SESSION['textservice'] = $textservice;
-		header("location: page2.php");
+		if($flag){
+			mysqli_commit($db);
+			$_SESSION['subject'] = $subject;
+			$_SESSION['examareaname'] = $examareaname;
+			$_SESSION['textservice'] = $textservice;
+			header("location: page2.php");
+		} else{
+			mysqli_rollback($db);
+			$_SESSION['msg'] = 'Check registration dates';
+			echo $_SESSION['msg'];
+		}		
 	}
 ?>
 
@@ -58,13 +89,6 @@
 <body>
 <div class = "header">
 	<h1>Register for the test</h1>
-	<table style="width:20%">
-		<tr><th>exam period</th><th>written</th><th>performance</th></tr>
-		<tr><td align = center>A</td><td align = center>Jan 14</td><td align = center>Mar 31</td></tr>
-		<tr><td align = center>B</td><td align = center>Mar 25</td><td align = center>May 20</td></tr>
-		<tr><td align = center>C</td><td align = center>Jun 10</td><td align = center>Sep 09</td></tr>
-	</table>
-	<br>
 </div>
 
 
@@ -88,9 +112,13 @@
 		<tr>
 			<td>exam period:</td>
 			<td><select name = "examperiod">
-				<option>A</option>
-				<option>B</option>
-				<option>C</option></td>
+				<?php
+					$epresult = mysqli_query($db, "SELECT examperiod FROM examperiodlist") or die(mysqli_error($db));
+					while($epresultrow = mysqli_fetch_assoc($epresult)){
+						echo '<option>'.$epresultrow["examperiod"].'</option>';
+					}
+				?>				
+			</td>
 		</tr>
 		<tr>
 			<td>exam type:</td>
