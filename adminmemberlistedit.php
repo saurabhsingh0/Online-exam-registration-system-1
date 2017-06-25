@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Member List</title>
+    <title>Admin Edit Member</title>
 </head>
 <body>
 <div class = "header">
-    <h1>Member List</h1>
+    <h1>Admin Edit Member</h1>
 </div>
 
 <?php
