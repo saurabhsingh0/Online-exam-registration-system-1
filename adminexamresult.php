@@ -41,11 +41,13 @@
         echo "0 results";
     }
 
-    echo '<br><form method = "post" action = "adminexamresultadd.php"><input type="submit" name = "addresult_btn" value = "Update result"></form>';
- 
+
     if (isset($_POST['addresult_btn'])){
         header("location: adminexamresultadd.php");
     };
+    
+    echo '<br><form method = "post" action = "adminexamresultadd.php"><input type="submit" name = "addresult_btn" value = "Update result"></form>';
+ 
 
     mysqli_close($db);
 ?>

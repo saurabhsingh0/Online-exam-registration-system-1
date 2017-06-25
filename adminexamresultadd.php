@@ -25,6 +25,20 @@
         die("Connection failed: " . mysqli_connect_error());
     }
 
+    if (isset($_POST['addresult1_btn'])){
+        $registrationnum = mysqli_real_escape_string($db, $_POST['registrationnum']);
+        $score = mysqli_real_escape_string($db, $_POST['score']);
+        $passorfail = mysqli_real_escape_string($db, $_POST['passorfail']);
+
+        $sql1 = "UPDATE examresult SET score = '$score', passorfail = '$passorfail' WHERE registrationnum = '$registrationnum';";
+        $result = mysqli_query($db, $sql1) or die(mysqli_error($db));
+            
+        header("location: adminexamresult.php");
+        //mysqli_close($db);
+    } else if(isset($_POST['cancel2_btn'])){
+        header("location: adminexamresult.php");
+    }
+
     $sql = "SELECT * FROM examresult NATURAL JOIN testregister;";
     $result = mysqli_query($db, $sql);
     //$result = mysqli_query($db, $sql) or die(mysqli_error($db));
@@ -40,19 +54,6 @@
         echo "0 results";
     }
 
-    if (isset($_POST['addresult1_btn'])){
-        $registrationnum = mysqli_real_escape_string($db, $_POST['registrationnum']);
-        $score = mysqli_real_escape_string($db, $_POST['score']);
-        $passorfail = mysqli_real_escape_string($db, $_POST['passorfail']);
-
-        $sql1 = "UPDATE examresult SET score = '$score', passorfail = '$passorfail' WHERE registrationnum = '$registrationnum';";
-        $result = mysqli_query($db, $sql1) or die(mysqli_error($db));
-            
-        header("location: adminexamresult.php");
-        //mysqli_close($db);
-    } else if(isset($_POST['cancel2_btn'])){
-        header("location: adminexamresult.php");
-    }
 ?>
 
 <br>
