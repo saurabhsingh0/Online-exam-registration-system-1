@@ -17,22 +17,16 @@
     	die("Connection failed: " . mysqli_connect_error());
 	}
 
-	/*if(isset($_SESSION['username'])){
-    	$username = $_SESSION['username'];
-    }else {
-    	echo 'noo';
-	}*/
-
 	$username = $_SESSION['username'];
-	$sql = "SELECT * FROM testregister NATURAL JOIN subject WHERE username = '$username' ORDER BY examyear, examperiod;";
+	$sql = "SELECT * FROM testregister NATURAL JOIN subject NATURAL JOIN examresult WHERE username = '$username' ORDER BY registrationnum;";
 	$result = mysqli_query($db, $sql);
 	//$result = mysqli_query($db, $sql) or die(mysqli_error($db));
 	if (mysqli_num_rows($result) > 0) {
     // output data of each row
 		echo '<table>';
-		echo '<th>registration #</th><th>subject</th><th>year</th><th>period</th>';
+		echo '<th>Registration #</th><th>Subject</th><th>Year</th><th>Period</th><th>Type</th><th>Exam date</th><th>score</th><th>Pass/Fail</th>';
     	while($row = mysqli_fetch_assoc($result)) {
-    		echo '<tr><td align = center>'.$row["registrationnum"].'</td><td>'.$row["subjectname"].'</td><td align = center>'.$row["examyear"].'</td><td align = center>'.$row["examperiod"].'</td></tr>';
+    		echo '<tr><td align = center>'.$row["registrationnum"].'</td><td>'.$row["subjectname"].'</td><td align = center>'.$row["examyear"].'</td><td align = center>'.$row["examperiod"].'</td><td align = center>'.$row["examtype"].'</td><td align = center>'.$row["examdate"].'</td><td align = center>'.$row["score"].'</td><td align = center>'.$row["passorfail"].'</td></tr>';
     	}
     	echo '</table>';
 	} else {

@@ -23,7 +23,7 @@
 	$db = mysqli_connect("localhost", "root", "vdxd", "examination");
     // Check connection 
     if (!$db) {
-        die("Connection failed: " . mysqli_connect_error());
+        die("Connection failed: ".mysqli_connect_error());
     }
 	
 	$sql = "SELECT * FROM examperiodlist;";
@@ -49,3 +49,8 @@
 	}
     mysqli_close($db);
 ?>
+<br>
+<div><a href="admin.php">Admin Home</a></div>
+<div><a href="logout.php">Logout</a></div>
+</body>
+</html>

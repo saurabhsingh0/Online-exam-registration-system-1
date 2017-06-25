@@ -25,6 +25,11 @@
   			</td>
 		</tr>
 		<tr>
+			<td>exam type:</td>
+			<td><?php echo $_SESSION['examtype'];?>
+  			</td>
+		</tr>
+		<tr>
 			<td>exam date:</td>
 			<td><?php echo $_SESSION['examdate'];?>
   			</td>
@@ -42,6 +47,8 @@
 	</table>
 </form>
 <br><br>
+<div><a href="personalhistory.php">My registration history</a></div>
+
 <div><a href="home.php">Home</a></div>
 <div><a href="logout.php">Logout</a></div>
 </body>

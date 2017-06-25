@@ -20,7 +20,8 @@
 <h1>Admin Exam</h1>
 <div><h4>Welcome <?php echo $_SESSION['username']; ?></h4></div>
 
-<div><a href="examlist.php">Exam list</a></div>
+<div><a href="adminexamlist.php">Admin Exam List</a></div>
+<div><a href="adminexamdesc.php">Admin Exam Description</a></div>
 <div><a href="adminexamperiod.php">Admin Exam Period</a></div>
 <br>
 

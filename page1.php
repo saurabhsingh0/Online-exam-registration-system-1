@@ -4,7 +4,7 @@
 	$db = mysqli_connect("localhost", "root", "vdxd", "examination");
 	
 	mysqli_autocommit($db, false);
-	$flag = true;
+	$flag = 1;
 
 	if(!isset($_SESSION['username'])){
     	header("location: home1.php");
@@ -21,6 +21,11 @@
 		$examareaname = explode(' ',$examarea);
 		$examareaname = $examareaname[2].' '.$examareaname[3];
 		
+		$result = mysqli_query($db, "SELECT examareaid FROM examarea WHERE examareaname = '$examareaname'") or die(mysqli_error($db));
+		$examareaid = mysqli_fetch_row($result);
+
+		$result = mysqli_query($db, "SELECT subjectid FROM subject WHERE subjectname = '$subject'") or die(mysqli_error($db));
+		$subjectid = mysqli_fetch_row($result);
 
 		if($examtype == 'written'){
 			$sql = "SELECT wregstart,wregend FROM examperiodlist WHERE examperiod = '$examperiod'";
@@ -31,7 +36,7 @@
 			$enddate = DATE_FORMAT(date_Create($examperiod1[1]),'m-d');
 			$cur = date('m-d');
 			if(($cur < $startdate) || ($cur > $enddate)){
-				$flag = false;
+				$flag = 0;
 			}
 		}else if($examtype == 'performance'){
 			$sql = "SELECT pregstart,pregend FROM examperiodlist WHERE examperiod = '$examperiod'";
@@ -42,43 +47,76 @@
 			$enddate = DATE_FORMAT(date_Create($examperiod1[1]),'m-d');
 			$cur = date('m-d');
 			if(($cur < $startdate) || ($cur > $enddate)){
-				$flag = false;
+				$flag = 0;
+			} else{
+				$sql11 = "SELECT passorfail FROM examresult NATURAL JOIN testregister WHERE username = '$username' AND subjectid = '$subjectid[0]' AND examtype = 'written'";
+				$result = mysqli_query($db, $sql11) or die(mysqli_error($db));
+				$previouspassorfail = mysqli_fetch_row($result);
+				if($previouspassorfail[0] != 'pass'){
+					$flag = 3;
+				}
 			}
 		}
 
-		$result = mysqli_query($db, "SELECT examareaid FROM examarea WHERE examareaname = '$examareaname'") or die(mysqli_error($db));
-		$examareaid = mysqli_fetch_row($result);
+		$result = mysqli_query($db, "SELECT * FROM testregister WHERE username = '$username' AND subjectid = '$subjectid[0]' AND examyear = YEAR(curdate()) AND examperiod = '$examperiod' AND examtype = '$examtype'") or die(mysqli_error($db));
+		if (mysqli_num_rows($result) > 0){
+			$flag = 2;
+		}
 
-		$result = mysqli_query($db, "SELECT subjectid FROM subject WHERE subjectname = '$subject'") or die(mysqli_error($db));
-		$subjectid = mysqli_fetch_row($result);
+		$result = mysqli_query($db, "SELECT * FROM examlist WHERE subjectid = '$subjectid[0]' AND examyear = YEAR(curdate()) AND examperiod = '$examperiod'") or die(mysqli_error($db));
+		if (mysqli_num_rows($result) == 0){
+			$flag = 4;
+		} 
 
 		$sql = "INSERT INTO testregister(username,date,subjectid,examyear,examperiod,examtype,examareaid,textservice) VALUES('".$username."',curdate(),'".$subjectid[0]."', YEAR(curdate()),'".$examperiod."','".$examtype."','".$examareaid[0]."','".$textservice."');";
 		$result = mysqli_query($db, $sql);
 
 		if($examtype == 'written'){
-			$sql = "SELECT DATE_FORMAT((SELECT writtentest FROM examperiodlist WHERE examperiod = '$examperiod'), '%M %D');";
+			$sql = "SELECT DATE(concat(YEAR(curdate()), '-', DATE_FORMAT((SELECT writtentest FROM examperiodlist WHERE examperiod = '$examperiod'), '%m-%d')));";
 			$result = mysqli_query($db, $sql);
 			$examdate = mysqli_fetch_row($result);
-			$_SESSION['examdate'] = $examdate[0].', '.date("Y");
+			$_SESSION['examdate'] = $examdate[0];
 		}else{
-			$sql = "SELECT DATE_FORMAT((SELECT performancetest FROM examperiodlist WHERE examperiod = '$examperiod'), '%M %D');";
+			$sql = "SELECT DATE(concat(YEAR(curdate()), '-', DATE_FORMAT((SELECT performancetest FROM examperiodlist WHERE examperiod = '$examperiod'), '%m-%d')));";
 			$result = mysqli_query($db, $sql);
 			$examdate = mysqli_fetch_row($result);
-			$_SESSION['examdate'] = $examdate[0].', '.date("Y");
+			$_SESSION['examdate'] = $examdate[0];
 		}
 
-		if($flag){
+		$sql = "SELECT registrationnum FROM testregister WHERE username = '$username' AND subjectid = '$subjectid[0]' AND examyear = YEAR(curdate()) AND examperiod = '$examperiod' AND examtype = '$examtype'";
+		$result = mysqli_query($db, $sql);
+		$registrationnum = mysqli_fetch_row($result);
+
+		$sql = "INSERT INTO examresult VALUES('".$subjectid[0]."',YEAR(curdate()),'".$examperiod."','".$examtype."','".$registrationnum[0]."','".$examdate[0]."',null,null);";
+		$result = mysqli_query($db, $sql);// or die(mysqli_error($db));
+
+
+		if($flag == 1){
 			mysqli_commit($db);
 			$_SESSION['subject'] = $subject;
 			$_SESSION['examareaname'] = $examareaname;
 			$_SESSION['textservice'] = $textservice;
+			$_SESSION['examtype'] = $examtype;
 			header("location: page2.php");
-		} else{
+		} else if($flag == 0){
 			mysqli_rollback($db);
-			$_SESSION['msg'] = 'Check registration dates';
+			$_SESSION['msg'] = 'Check registration dates.';
 			echo $_SESSION['msg'];
-		}		
+		} else if($flag == 2){
+			mysqli_rollback($db);
+			$_SESSION['msg'] = 'Already registered for the same test.';
+			echo $_SESSION['msg'];
+		} else if($flag == 3){
+			mysqli_rollback($db);
+			$_SESSION['msg'] = 'You need to pass written test first.';
+			echo $_SESSION['msg'];
+		} else if($flag == 4){
+			mysqli_rollback($db);
+			$_SESSION['msg'] = 'No exam for chosen period this year.';
+			echo $_SESSION['msg'];
+		}	
 	}
+
 ?>
 
 <!DOCTYPE html>

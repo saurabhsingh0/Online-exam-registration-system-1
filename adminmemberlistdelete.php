@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Member List</title>
+    <title>Member Delete</title>
 </head>
 <body>
 <div class = "header">
-    <h1>Member List</h1>
+    <h1>Member Delete</h1>
 </div>
 
 <?php
@@ -34,21 +34,36 @@
         while($row = mysqli_fetch_assoc($result)) {
             echo '<tr><td align = center>'.$row["username"].'</td><td>'.$row["member_name"].'</td><td align = center>'.$row["dob"].'</td><td align = center>'.$row["phone"].'</td><td align = center>'.$row["email"].'</td><td align = center>'.$row["admin"].'</td></tr>';
         }
-        echo '</table><br><form method = "post" action = "adminmemberlist.php"><input type="submit" name = "edit_btn" value = "Edit">   <input type="submit" name = "delete_btn" value = "Delete"></form>';
+        echo '</table>';
     } else {
         echo "0 results";
     }
 
-    if (isset($_POST['edit_btn'])){
-        header("location: adminmemberlistedit.php");
-    } else if(isset($_POST['delete_btn'])){
-        header("location: adminmemberlistdelete.php");
-    } 
+    if (isset($_POST['delete1_btn'])){
+        $usernametodelete = mysqli_real_escape_string($db, $_POST['usernametodelete']);
 
-    mysqli_close($db);
+        $sql = "DELETE FROM member WHERE username = '$usernametodelete';";
+        $result = mysqli_query($db, $sql) or die(mysqli_error($db));
+
+        header("location: adminmemberlist.php");
+    } else if (isset($_POST['cancel_btn'])){
+        header("location: adminmemberlist.php");
+    }
+
 ?>
 
-<br><br>
+<br>
+<form method="post" action="adminmemberlistdelete.php">
+    <table>
+        <tr>
+            <td>Username to delete:</td>
+            <td><input type="text" name="usernametodelete" class="textInput"></td>
+            <td><input type="submit" name="delete1_btn" value="Delete"></td>
+        </tr>
+    </table>
+</form>
+
+<br>
 <div><a href="admin.php">Admin Home</a></div>
 <div><a href="logout.php">Logout</a></div>
 </body>
