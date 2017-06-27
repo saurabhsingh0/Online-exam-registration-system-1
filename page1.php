@@ -87,8 +87,8 @@
 		$result = mysqli_query($db, $sql);
 		$registrationnum = mysqli_fetch_row($result);
 
-		$sql = "INSERT INTO examresult VALUES('".$subjectid[0]."',YEAR(curdate()),'".$examperiod."','".$examtype."','".$registrationnum[0]."','".$examdate[0]."',null,null);";
-		$result = mysqli_query($db, $sql);// or die(mysqli_error($db));
+		$sql = "INSERT INTO examresult VALUES('".$registrationnum[0]."','".$examdate[0]."',null,null);";
+		$result = mysqli_query($db, $sql) or die(mysqli_error($db));
 
 
 		if($flag == 1){

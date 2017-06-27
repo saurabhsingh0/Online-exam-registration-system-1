@@ -53,6 +53,20 @@
                 }
             }
         echo '</table>';
+
+    $sql = "SELECT * FROM examperiodlist;";
+    $result = mysqli_query($db, $sql) or die(mysqli_error($db));
+    if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+        echo '<br><br><br><table border = "1" cellpadding="10">';
+        echo '<tr><th colspan = "9">Exam period (ignore the year)</th></tr><th>Exam Period</th><th>Registration<br>Start date(w)</th><th>Registration<br>End date(w)</th><th>Exam date(w)</th><th>result(w)</th><th>Registration<br>Start date(p)</th><th>Registration<br>End date(p)</th><th>Exam date(p)</th><th>Final Result</th>';
+        while($row = mysqli_fetch_assoc($result)) {
+            echo '<tr><td align = center>'.$row["examperiod"].'</td><td>'.$row["wregstart"].'</td><td align = center>'.$row["wregend"].'</td><td align = center>'.$row["writtentest"].'</td><td align = center>'.$row["wresult"].'</td><td align = center>'.$row["pregstart"].'</td><td align = center>'.$row["pregend"].'</td><td align = center>'.$row["performancetest"].'</td><td align = center>'.$row["finalresult"].'</td></tr>';
+        }
+        echo '</table><br>';
+    } else {
+        echo "0 results";
+    }    
     }
 
     mysqli_close($db);

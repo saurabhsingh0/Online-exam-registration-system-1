@@ -20,6 +20,9 @@
 	if ($password != '' && $password2 != '' && $password == $password2) {
 		//create user
 		$password = md5($password); //hash password before storing for security purposes
+		if(!$admin){
+			$admin = 'NO';
+		}
 		$sql = "INSERT INTO member(username, member_name, dob, phone, email, password, admin) VALUES('".$username."','".$member_name."','".$dob."','".$phone."','".$email."','".$password."','".$admin."');";
 		$result = mysqli_query($db, $sql);
 
