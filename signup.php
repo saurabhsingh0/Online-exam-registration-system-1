@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	//connect to database
-	$db = mysqli_connect("localhost", "root", "vdxd", "examination");
+	$db = mysqli_connect("localhost", "root", "", "examination");
 	//$test = mysqli_query($db, "SELECT * FROM member");
 	//while ($row = $test->fetch_assoc()) {
     //	echo "username: ".$row['username']."<br>";
@@ -73,7 +73,7 @@
 		</tr>
 		<tr>
 			<td>Date of birth:</td>
-			<td><input type="text" name="dob" class="textInput"></td>
+			<td><input type="date" name="dob" class="textInput"></td>
 		</tr>
 		<tr>
 			<td>Phone number:</td>

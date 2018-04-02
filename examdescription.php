@@ -11,7 +11,7 @@
 <?php
     session_start();
 
-    $db = mysqli_connect("localhost", "root", "vdxd", "examination");
+    $db = mysqli_connect("localhost", "root", "", "examination");
     // Check connection 
     if (!$db) {
         die("Connection failed: " . mysqli_connect_error());
